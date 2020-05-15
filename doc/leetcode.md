@@ -84,3 +84,122 @@ public static int solution3(int[] time){
 ```
 
 > 这个题有许多变形，例如两个数的和等于多少;两个数的乘积等于多少，都可以用这种方式来计算
+
+## 136. 只出现一次的数字
+
+    给定一个非空整数数组，除了某个元素只出现一次以外，其余每个元素均出现两次。找出那个只出现了一次的元素。
+    说明：
+    	你的算法应该具有线性时间复杂度。 你可以不使用额外空间来实现吗？
+    示例1：
+    	输入: [2,2,1]
+    	输出: 1
+    示例2:
+    	输入: [4,1,2,1,2]
+    	输出: 4
+
+> 解法一：
+> 借助 map 数字为 key，相同的累计加一，最后在遍历 map 为 1 的就是该要的结果，这种不符合要求
+> 解法二：
+> 异或的公式异或运算满足交换律和结合律，即 a⊕b⊕a=b⊕a⊕a=b⊕(a⊕a)=b⊕0=b
+
+```java
+public static int solution2(int[] nums){
+		int result = 0;
+		for(int i=0;i<nums.length;i++){
+			result ^= nums[i];
+		}
+		return result;
+	}
+```
+
+> 改题变形，例如缺失数字,找不同的数字
+
+## 2. 两数相加
+
+    给出两个 非空 的链表用来表示两个非负的整数。其中，它们各自的位数是按照 逆序 的方式存储的，并且它们的每个节
+    点只能存储 一位 数字。
+    如果，我们将这两个数相加起来，则会返回一个新的链表来表示它们的和。
+    您可以假设除了数字 0 之外，这两个数都不会以 0 开头。
+    示例一:
+    	输入：(2 -> 4 -> 3) + (5 -> 6 -> 4)
+    	输出：7 -> 0 -> 8
+    	原因：342 + 465 = 807
+
+> 这个题目主要考察链表相关的问题，要知道链表的声明和赋值遍历等，就是要注意有进位就可以;
+
+```java
+public class ListNode{
+	int val;
+	ListNode next;
+	ListNode(int x){
+		val = x;
+	}
+}
+public class AddTwoNumbers{
+	public static void main(String[] args) {
+		ListNode l1 = new ListNode(4);
+		ListNode l1_2 = new ListNode(5);
+		ListNode l1_3 = new ListNode(6);
+		l1.next = l1_2;
+		l1_2.next = l1_3;
+
+		ListNode l2 = new ListNode(5);
+		ListNode l2_2 = new ListNode(4);
+		ListNode l2_3 = new ListNode(7);
+		l2.next = l2_2;
+		l2_2.next = l2_3;
+		ListNode result = solution(l1,l2);
+		while(result!=null){
+			System.out.println(result.val);
+			result = result.next;
+		}
+	}
+
+	public static ListNode solution(ListNode l1,ListNode l2){
+		ListNode result = new ListNode(0);
+		ListNode p = l1;
+		ListNode q = l2;
+		ListNode current = result;
+		int carry = 0;
+
+		while(p!=null || q!=null){
+			int x = p==null? 0 : p.val;
+			int y = q==null?0 : q.val;
+			System.out.println(x + "=" + y);
+			int sum = carry + x + y;
+			carry = sum / 10;
+			current.next = new ListNode(sum%10);
+			current = current.next;
+			if(p!=null){
+				p = p.next;
+			}
+			if(q!=null){
+				q = q.next;
+			}
+		}
+		if(carry>0){
+			current.next = new ListNode(carry);
+		}
+		return result.next;
+	}
+}
+```
+
+> 扩展题，加减乘除
+
+## 3. 无重复字符的最长子串
+
+    给定一个字符串，请你找出其中不含有重复字符的 最长子串 的长度。
+    示例一:
+    	输入: "abcabcbb"
+    	输出: 3
+    	解释: 因为无重复字符的最长子串是 "abc"，所以其长度为 3。
+    示例二:
+    	输入: "bbbbb"
+    	输出: 1
+    	解释: 因为无重复字符的最长子串是 "b"，所以其长度为 1。
+    示例三:
+    	输入: "pwwkew"
+    	输出: 3
+    	解释: 因为无重复字符的最长子串是 "wke"，所以其长度为 3。
+    	请注意，你的答案必须是 子串 的长度，"pwke" 是一个子序列，不是子串。
