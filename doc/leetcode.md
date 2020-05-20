@@ -264,7 +264,7 @@ public static int solution2(int[] nums,int k){
 	}
 ```
 
-## 5. 最长回文子串
+## 5. 最长回文子串 !!!
 
     给定一个字符串 s，找到 s 中最长的回文子串。你可以假设 s 的最大长度为 1000。
     示例 1：
@@ -304,6 +304,52 @@ public static String solution(String s){
 ```
 
 > 动态规划
+
+## 6. Z 字形变换
+
+    将一个给定字符串根据给定的行数，以从上往下、从左到右进行 Z 字形排列。
+    比如输入字符串为 "LEETCODEISHIRING" 行数为 3 时，排列如下：
+    L   C   I   R
+    E T O E S I I G
+    E   D   H   N
+    之后，你的输出需要从左往右逐行读取，产生出一个新的字符串，比如："LCIRETOESIIGEDHN"。
+    示例2：
+    	输入: s = "LEETCODEISHIRING", numRows = 4
+    	输出: "LDREOEIIECIHNTSG"
+    	解释:
+    		L     D     R
+    		E   O E   I I
+    		E C   I H   N
+    		T     S     G
+
+```java
+public static String solution(String s,int numRows){
+		if(numRows==1){return s;}
+
+		List<StringBuilder> rows = new ArrayList<StringBuilder>();
+
+		for(int i=0;i<Math.min(numRows,s.length());i++){
+			rows.add(new StringBuilder());
+		}
+
+		int curRow = 0;
+		boolean goDown = false;
+
+		for(char c :s.toCharArray()){
+			rows.get(curRow).append(c);
+			if(curRow==0 || curRow == numRows-1){
+				goDown = !goDown;
+			}
+			curRow += goDown?1:-1;
+		}
+
+		StringBuilder sb = new StringBuilder();
+		for(StringBuilder row:rows){
+			sb.append(row);
+		}
+		return sb.toString();
+	}
+```
 
 ## 25. K 个一组翻转链表
 
