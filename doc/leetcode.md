@@ -203,3 +203,132 @@ public class AddTwoNumbers{
     	输出: 3
     	解释: 因为无重复字符的最长子串是 "wke"，所以其长度为 3。
     	请注意，你的答案必须是 子串 的长度，"pwke" 是一个子序列，不是子串。
+
+> 这个题目主要考虑的是双指针滑动窗口的问题，左指针一个一个滑动，右指针一直往右滑动，如果不符合条件，删除左指针
+> set 集合的元素，右指针继续右移
+
+```java
+public static int solution(String s){
+		//存放字符串
+		LinkedHashSet<Character> set = new LinkedHashSet<Character>();
+		//子串的长度
+		int result = 0;
+		//右指针的位置
+		int rk = 0;
+		int len = s.length();
+		for(int i=0;i<len;i++){
+			if(i!=0){
+				set.remove(s.charAt(i-1));
+			}
+			while(rk<len&&!set.contains(s.charAt(rk))){
+				set.add(s.charAt(rk));
+				++rk;
+			}
+			result = Math.max(result, set.size());
+		}
+		return result;
+	}
+```
+
+## 560. 和为 K 的子数组 !!!
+
+    给定一个整数数组和一个整数 k，你需要找到该数组中和为 k 的连续的子数组的个数。
+    示例1：
+    	输入:nums = [1,1,1], k = 2
+    	输出: 2 , [1,1] 与 [1,1] 为两种不同的情况。
+    说明:
+    	1.数组的长度为 [1, 20,000]。
+    	2.数组中元素的范围是 [-1000, 1000] ，且整数 k 的范围是 [-1e7, 1e7]。
+
+> 暴力法  
+> 前缀和 + 哈希表优化
+
+```java
+public static int solution2(int[] nums,int k){
+		int result=0;
+		int pre = 0;
+
+		Map<Integer,Integer> map = new HashMap<Integer,Integer>();
+		map.put(0, 1);
+
+		for(int i=0;i<nums.length;i++){
+			pre += nums[i];
+
+			if(map.containsKey(pre - k)){
+				result += map.get(pre-k);
+			}
+
+			map.put(pre, map.getOrDefault(pre, 0)+1);
+		}
+		return result;
+	}
+```
+
+## 5. 最长回文子串
+
+    给定一个字符串 s，找到 s 中最长的回文子串。你可以假设 s 的最大长度为 1000。
+    示例 1：
+    	输入: "babad"
+    	输出: "bab"
+    	注意: "aba" 也是一个有效答案。
+    示例 2：
+    	输入: "cbbd"
+    	输出: "bb"
+
+```java
+public static String solution(String s){
+		if(s==null | s.length()<2){
+			return s;
+		}
+
+		int strLen = s.length();
+		int maxStart = 0;
+		int maxEnd = 0;
+		int maxLen = 1;//最长回文串的长度
+
+		boolean [][] dp = new boolean[strLen][strLen];
+		for(int r=1;r<strLen;r++){
+			for(int l=0;l<r;l++){
+				if(s.charAt(l)==s.charAt(r) && (r-l<=2 || dp[l+1][r-1])){
+					dp[l][r] = true;
+					if(r-l+1>maxLen){
+						maxLen = r-l+1;
+						maxStart = l;
+						maxEnd = r;
+					}
+				}
+			}
+		}
+		return s.substring(maxStart,maxEnd+1);
+	}
+```
+
+> 动态规划
+
+## 25. K 个一组翻转链表
+
+    给你一个链表，每 k 个节点一组进行翻转，请你返回翻转后的链表。
+    k 是一个正整数，它的值小于或等于链表的长度。
+    如果节点总数不是 k 的整数倍，那么请将最后剩余的节点保持原有顺序。
+    示例1:
+    	给你这个链表：1->2->3->4->5
+    	当 k = 2 时，应当返回: 2->1->4->3->5
+    	当 k = 3 时，应当返回: 3->2->1->4->5
+    说明:
+    	你的算法只能使用常数的额外空间。
+    	你不能只是单纯的改变节点内部的值，而是需要实际进行节点交换。
+
+## 43. 字符串相乘
+
+    给定两个以字符串形式表示的非负整数 num1 和 num2，返回 num1 和 num2 的乘积，它们的乘积也表示为字符串形式。
+    示例1：
+    	输入: num1 = "2", num2 = "3"
+    	输出: "6"
+    示例2:
+    	输入: num1 = "123", num2 = "456"
+    	输出: "56088"
+    说明:
+    	1.num1 和 num2 的长度小于110。
+    	2.num1 和 num2 只包含数字 0-9。
+    	3.num1 和 num2 均不以零开头，除非是数字 0 本身。
+    	4.不能使用任何标准库的大数类型（比如 BigInteger）或直接将输入转换为整数来处理。
