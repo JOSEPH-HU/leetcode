@@ -351,6 +351,74 @@ public static String solution(String s,int numRows){
 	}
 ```
 
+## 1011. 在 D 天内送达包裹的能力
+
+    传送带上的包裹必须在 D 天内从一个港口运送到另一个港口。
+    传送带上的第 i 个包裹的重量为 weights[i]。每一天，我们都会按给出重量的顺序往传送带上装载包裹。我们装载的
+    重量不会超过船的最大运载重量。
+    返回能在 D 天内将传送带上的所有包裹送达的船的最低运载能力。
+    示例1：
+    	输入：weights = [1,2,3,4,5,6,7,8,9,10], D = 5
+    	输出：15
+    	解释：
+    	船舶最低载重 15 就能够在 5 天内送达所有包裹，如下所示：
+    	第 1 天：1, 2, 3, 4, 5
+    	第 2 天：6, 7
+    	第 3 天：8
+    	第 4 天：9
+    	第 5 天：10
+    	请注意，货物必须按照给定的顺序装运，因此使用载重能力为 14 的船舶并将包装分成 (2, 3, 4, 5),
+    	(1, 6, 7), (8), (9), (10) 是不允许的。
+    示例2:
+    	输入：weights = [3,2,2,4,1,4], D = 3
+    	输出：6
+    	解释：
+    		船舶最低载重 6 就能够在 3 天内送达所有包裹，如下所示：
+    		第 1 天：3, 2
+    		第 2 天：2, 4
+    		第 3 天：1, 4
+    示例3：
+    	输入：weights = [1,2,3,1,1], D = 4
+    	输出：3
+    	解释：
+    	第 1 天：1
+    	第 2 天：2
+    	第 3 天：3
+    	第 4 天：1, 1
+
+```java
+public static int solution(int[] weights,int D){
+		int start = 0 ;
+		int end = 0;
+
+		for(int weight:weights){
+			start = Math.max(start,weight);
+			end += weight;
+		}
+
+		while(start<end){
+			int mid = start + (end - start)/2;
+			int currDay = 1;
+			int currWeight = 0;
+			for(int weight:weights){
+				currWeight += weight;
+				if(currWeight>mid){
+					currWeight = weight;
+					currDay += 1;
+				}
+			}
+			if(currDay>D){
+				start = mid + 1;
+			}else{
+				end = mid;
+			}
+		}
+		return end;
+	}
+```
+
+> 二分法
+
 ## 25. K 个一组翻转链表
 
     给你一个链表，每 k 个节点一组进行翻转，请你返回翻转后的链表。
@@ -378,3 +446,71 @@ public static String solution(String s,int numRows){
     	2.num1 和 num2 只包含数字 0-9。
     	3.num1 和 num2 均不以零开头，除非是数字 0 本身。
     	4.不能使用任何标准库的大数类型（比如 BigInteger）或直接将输入转换为整数来处理。
+
+```java
+public static boolean solution(int[] A){
+		int sum = 0;
+		for(int a:A){
+			sum += a;
+		}
+		if(sum%3!=0){
+			return false;
+		}
+		int len = A.length;
+		int avg = sum/3;
+		System.out.println(avg);
+		int curr = 0;
+		int i = 0;
+		while(i<len){
+			curr += A[i];
+			i++;
+			if(curr == avg){
+				break;
+			}
+		}
+		if(curr!=avg){
+			return false;
+		}
+		int j = i ;
+		curr = 0;
+		while(j<len){
+			curr += A[j];
+			j++;
+			if(curr==avg){
+				break;
+			}
+		}
+		System.out.println(i+"="+j + "=" + len);
+		if(curr==avg && (j != len)){
+			return true;
+		}
+		return false;
+	}
+```
+
+## 1014. 最佳观光组合
+
+    给定正整数数组 A，A[i] 表示第 i 个观光景点的评分，并且两个景点 i 和 j 之间的距离为 j - i。
+    一对景点（i < j）组成的观光组合的得分为（A[i] + A[j] + i - j）：景点的评分之和减去它们两者之间的距离。
+    返回一对观光景点能取得的最高分。
+    示例:
+    	输入：[8,1,5,2,6]
+    	输出：11
+    	解释：i = 0, j = 2, A[i] + A[j] + i - j = 8 + 5 + 0 - 2 = 11
+
+```java
+public static int solution(int[] A){
+		int len = A.length;
+
+		int pre_max = A[0] + 0;
+		int result = 0;
+
+		for(int j=1;j<len;j++){
+			result = Math.max(result, pre_max + A[j]-j);
+			pre_max = Math.max(pre_max, A[j]+j);
+		}
+		return result;
+	}
+```
+
+> 公式：max= A[i]+i+A[j]-j;如果 A[j]-j 确定，我们可以找 j 前面的 A[i] + i 的最大值
