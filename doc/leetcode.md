@@ -609,3 +609,132 @@ public static int solution1(int[] arr,int k,int threshold){
 ```
 
 > 前缀和和滑动窗口
+
+## 面试题 16.04. 井字游戏
+
+    设计一个算法，判断玩家是否赢了井字游戏。输入是一个 N x N 的数组棋盘，由字符" "，"X"和"O"组成，其中字
+    符" "代表一个空位。
+    以下是井字游戏的规则：
+
+    玩家轮流将字符放入空位（" "）中。
+    第一个玩家总是放字符"O"，且第二个玩家总是放字符"X"。
+    "X"和"O"只允许放置在空位中，不允许对已放有字符的位置进行填充。
+    当有N个相同（且非空）的字符填充任何行、列或对角线时，游戏结束，对应该字符的玩家获胜。
+    当所有位置非空时，也算为游戏结束。
+    如果游戏结束，玩家不允许再放置字符。
+
+    如果游戏存在获胜者，就返回该游戏的获胜者使用的字符（"X"或"O"）；如果游戏以平局结束，则返回 "Draw"；
+    如果仍会有行动（游戏未结束），则返回 "Pending"。
+    示例1：
+    	输入： board = ["O X"," XO","X O"]
+    	输出： "X"
+    示例2:
+    	输入： board = ["OOX","XXO","OXO"]
+    	输出： "Draw"
+    	解释： 没有玩家获胜且不存在空位
+    示例3:
+    	输入： board = ["OOX","XXO","OX "]
+    	输出： "Pending"
+    	解释： 没有玩家获胜且仍存在空位
+
+```java
+public static String solution(String[] board){
+		if(board.length==1){
+			return board[0]; }
+
+		int len = board.length;
+
+		//转换成二维数组
+		char[][] arrs = new char[len][len];
+		for(int i=0;i<len;i++){
+			arrs[i] = board[i].toCharArray();
+		}
+		boolean flag = false;
+		int value = 0;
+		//判断行
+		for(int i=0;i<len;i++){
+			value = 0;
+			for(int j=0;j<len;j++){
+				if(arrs[i][j]=='X'){
+					value++;
+				}else if(arrs[i][j]=='O'){
+					value--;
+				}else if(arrs[i][j] == ' '&& !flag){
+					flag = true;
+				}
+			}
+				if(value==len){
+					return "X";
+				}
+				if(value+len==0){
+					return "O";
+				}
+		}
+
+		//判断列
+		value = 0;
+		for(int i=0;i<len;i++){
+			value = 0;
+			for(int j=0;j<len;j++){
+				if(arrs[j][i]=='X'){
+					value++;
+				}else if(arrs[j][i]=='O'){
+					value--;
+				}else if(arrs[j][i]==' ' && !flag){
+					flag = true;
+				}
+			}
+			if(value==len){
+				return "X";
+			}
+			if(value+len==0){
+				return "O";
+			}
+		}
+
+		//正对角线
+		value = 0;
+		for(int i=0;i<len;i++){
+			if(arrs[i][i]=='X'){
+				value++;
+			}else if(arrs[i][i]=='O'){
+				value--;
+			}else if(arrs[i][i]==' '&&!flag){
+				flag = true;
+			}
+		}
+		if(value==len){
+			return "X";
+		}
+		if(value+len==0){
+			return "O";
+		}
+
+		//反向对角线
+		value = 0;
+		for(int i=0;i<len;i++){
+			if(arrs[i][len-i-1]=='X'){
+				value++;
+			}else if(arrs[i][len-i-1]=='O'){
+				value--;
+			}else if(arrs[i][len-i-1] == ' '&&!flag){
+				flag = true;
+			}
+		}
+		if(value==len){
+			return "X";
+		}
+		if(value+len==0){
+			return "O";
+		}
+
+		if(flag){
+			return "Pending";
+		}
+
+		return "Draw";
+
+		}
+```
+
+> 注意点：这个题主要是考虑到 4 中情况，行，列，正对角线和饭对角线
